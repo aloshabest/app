@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 )
 
@@ -18,11 +19,33 @@ func main() {
 	}
 }
 
+func handler404(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotFound)
+	if _, err := w.Write([]byte("404 Page Not Found")); err != nil {
+		panic(err)
+	}
+}
+
 func index(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello World!"))
+	if r.URL.Path != "/" {
+		handler404(w, r)
+		return
+	}
+
+	if _, err := w.Write([]byte("Hello World!")); err != nil {
+		panic(err)
+	}
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
+	pathRegexp := regexp.MustCompile(`^/hello/\w+$`)
+	if !pathRegexp.Match([]byte(r.URL.Path)) {
+		handler404(w, r)
+		return
+	}
+
 	name := strings.Split(r.URL.Path, "/")[2]
-	w.Write([]byte(fmt.Sprintf("Hello, %s", name)))
+	if _, err := w.Write([]byte(fmt.Sprintf("Hello, %s", name))); err != nil {
+		panic(err)
+	}
 }
