@@ -1,17 +1,28 @@
 package main
 
-import "net/http"
-
-type MyHandler struct {
-}
-
-func (MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello World!"))
-}
+import (
+	"fmt"
+	"net/http"
+	"strings"
+)
 
 func main() {
-	err := http.ListenAndServe(":3000", MyHandler{})
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/", index)
+	mux.HandleFunc("/hello", hello)
+
+	err := http.ListenAndServe(":3000", mux)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func index(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Hello World!"))
+}
+
+func hello(w http.ResponseWriter, r *http.Request) {
+	name := strings.Split(r.URL.Path, "/")[2]
+	w.Write([]byte(fmt.Sprintf("Hello, %s", name)))
 }
