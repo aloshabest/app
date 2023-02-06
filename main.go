@@ -10,7 +10,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", index)
-	mux.HandleFunc("/hello", hello)
+	mux.HandleFunc("/hello/", hello)
 
 	err := http.ListenAndServe(":3000", mux)
 	if err != nil {
