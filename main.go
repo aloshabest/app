@@ -34,8 +34,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	}
 	user := User{Id: 1, Name: "Ivan"}
 	bytes, _ := json.MarshalIndent(user, "", "   ")
-	fmt.Println(string(bytes))
-	if _, err := w.Write([]byte("Hello World!")); err != nil {
+	if _, err := w.Write([]byte(bytes)); err != nil {
 		panic(err)
 	}
 }
