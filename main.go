@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -31,7 +32,9 @@ func index(w http.ResponseWriter, r *http.Request) {
 		handler404(w, r)
 		return
 	}
-
+	user := User{Id: 1, Name: "Ivan"}
+	bytes, _ := json.MarshalIndent(user, "", "   ")
+	fmt.Println(string(bytes))
 	if _, err := w.Write([]byte("Hello World!")); err != nil {
 		panic(err)
 	}
@@ -48,4 +51,9 @@ func hello(w http.ResponseWriter, r *http.Request) {
 	if _, err := w.Write([]byte(fmt.Sprintf("Hello, %s", name))); err != nil {
 		panic(err)
 	}
+}
+
+type User struct {
+	Id   int
+	Name string
 }
