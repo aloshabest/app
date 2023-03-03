@@ -18,6 +18,26 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	http.HandleFunc("/user", UserHandler)
+	http.ListenAndServe(":3000", nil)
+}
+
+func UserHandler(w http.ResponseWriter, r *http.Request) {
+	user1 := User{Name: "Ivan", Id: 555}
+	bytes, err := json.Marshal(user1)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		res := map[string]any{
+			"ok":    false,
+			"error": err.Error(),
+		}
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+	w.Header().Set("Content-Type", "applications/json")
+
+	w.Write(bytes)
 }
 
 func handler404(w http.ResponseWriter, r *http.Request) {
